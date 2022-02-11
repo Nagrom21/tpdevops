@@ -1,15 +1,15 @@
 node {
     def app
 
-    stage('Nom de l'étape : ') {
+    stage('Trigger') {
         checkout scm
     }
 
-    stage('Build :') {
+    stage('Build') {
         app = docker.build("nagrom21/tp_devops")
     }
 
-    stage('Nom de l'étape') {
+    stage('Test') {
         docker.image("nagrom21/tp_devops").withRun('--rm -p 80:80 --name devops') { c ->
         sh 'docker ps'
         sh 'docker exec devops curl localhost:80'
@@ -17,7 +17,7 @@ node {
         }
     }
 
-    stage('Nom de l'étape : ') {
+    stage('Livraison') {
         docker.withRegistry('https://registry.hub.docker.com', 'docker-hub-credentials') {
             app.push("${env.BUILD_NUMBER}")
             app.push("1.0")
